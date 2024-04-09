@@ -12,14 +12,13 @@ struct ContentView: View {
     let missions: [Mission] = Bundle.main.decode("missions.json")
 
     @State private var toggle = false
+    @State private var path = NavigationPath()
 
     var body: some View {
         NavigationStack {
             FlipView(flip: toggle) {
                 ForEach(missions) { mission in
-                    NavigationLink {
-                        MissionView(mission: mission, astronauts: astronauts)
-                    } label: {
+                    NavigationLink(value: mission) {
                         VStack {
                             Image(mission.image)
                                 .resizable()
@@ -54,6 +53,9 @@ struct ContentView: View {
                 Button("Toggle") {
                     toggle.toggle()
                 }
+            }
+            .navigationDestination(for: Mission.self) { mission in
+                MissionView(mission: mission, astronauts: astronauts, path: $path)
             }
         }
     }
